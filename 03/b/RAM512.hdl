@@ -1,0 +1,33 @@
+// This file is part of the materials accompanying the book 
+// "The Elements of Computing Systems" by Nisan and Schocken, 
+// MIT Press. Book site: www.idc.ac.il/tecs
+// File name: projects/03/b/RAM512.hdl
+
+/**
+ * Memory of 512 registers, each 16 bit-wide. Out holds the value
+ * stored at the memory location specified by address. If load==1, then 
+ * the in value is loaded into the memory location specified by address 
+ * (the loaded value will be emitted to out from the next time step onward).
+ */
+
+CHIP RAM512 {
+    IN in[16], load, address[9];
+    OUT out[16];
+
+    PARTS:
+    // split addresses into 8:
+    DMux8Way(in=load, sel=address[6..8], a=outa, b=outb, c=outc, d=outd, e=oute, f=outf, g=outg, h=outh);
+
+    // 8x RAM8 chips:
+    RAM64(in=in, load=outa, address=address[0..5], out=fromRamA);
+    RAM64(in=in, load=outb, address=address[0..5], out=fromRamB);
+    RAM64(in=in, load=outc, address=address[0..5], out=fromRamC);
+    RAM64(in=in, load=outd, address=address[0..5], out=fromRamD);
+    RAM64(in=in, load=oute, address=address[0..5], out=fromRamE);
+    RAM64(in=in, load=outf, address=address[0..5], out=fromRamF);
+    RAM64(in=in, load=outg, address=address[0..5], out=fromRamG);
+    RAM64(in=in, load=outh, address=address[0..5], out=fromRamH);
+
+    // Emitt the correct signal:
+    Mux8Way16(a=fromRamA, b=fromRamB, c=fromRamC, d=fromRamD, e=fromRamE, f=fromRamF, g=fromRamG, h=fromRamH, sel=address[6..8], out=out);
+}

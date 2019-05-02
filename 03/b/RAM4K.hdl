@@ -1,0 +1,33 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/03/b/RAM4K.hdl
+
+/**
+ * Memory of 4K registers, each 16 bit-wide. Out holds the value
+ * stored at the memory location specified by address. If load==1, then 
+ * the in value is loaded into the memory location specified by address 
+ * (the loaded value will be emitted to out from the next time step onward).
+ */
+
+CHIP RAM4K {
+    IN in[16], load, address[12];
+    OUT out[16];
+
+    PARTS:
+    // split addresses into 8:
+    DMux8Way(in=load, sel=address[9..11], a=outa, b=outb, c=outc, d=outd, e=oute, f=outf, g=outg, h=outh);
+
+    // 8x RAM8 chips:
+    RAM512(in=in, load=outa, address=address[0..8], out=fromRamA);
+    RAM512(in=in, load=outb, address=address[0..8], out=fromRamB);
+    RAM512(in=in, load=outc, address=address[0..8], out=fromRamC);
+    RAM512(in=in, load=outd, address=address[0..8], out=fromRamD);
+    RAM512(in=in, load=oute, address=address[0..8], out=fromRamE);
+    RAM512(in=in, load=outf, address=address[0..8], out=fromRamF);
+    RAM512(in=in, load=outg, address=address[0..8], out=fromRamG);
+    RAM512(in=in, load=outh, address=address[0..8], out=fromRamH);
+
+    // Emitt the correct signal:
+    Mux8Way16(a=fromRamA, b=fromRamB, c=fromRamC, d=fromRamD, e=fromRamE, f=fromRamF, g=fromRamG, h=fromRamH, sel=address[9..11], out=out);
+}
