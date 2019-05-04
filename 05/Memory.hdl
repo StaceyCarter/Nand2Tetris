@@ -27,5 +27,19 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+   
+    // Feed in through a DMux - if first num in address is 0 address is < 16383, if first num is 1 it is > than this therefore address is in the screen or kbd.
+    DMux4Way(in=load, sel=address[13..14], a=loadRam1 , b=loadRam2, c=screenLoader, d=loadKbd);
+
+    // If either of the rams are set to load, output to loadmemory then to the RAM16k load pin.
+    Or(a=loadRam1, b=loadRam2, out=loadMemory);
+
+    RAM16K(in=in, load=loadMemory, address=address[0..13], out=memory);
+
+    Screen(in=in, load=screenLoader, address=address[0..12], out=scr);
+
+    Keyboard(out=kbd);
+
+    Mux4Way16(a=memory, b=memory, c=scr, d=kbd, sel=address[13..14], out=out);
+
 }
