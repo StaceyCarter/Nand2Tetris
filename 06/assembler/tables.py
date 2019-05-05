@@ -1,6 +1,6 @@
 
 # Key for what the computation represents. String represents a, c1, c2, c3, c4, c5, c6
-computation = {
+comp = {
     '0' : '0101010',
     '1' : '0111111',
     '-1' : '0111010',
@@ -33,7 +33,7 @@ computation = {
 
 # Destination table, value represents d1, d2, d3
 dest = {
-    'null' : '000',
+    None : '000',
     'M' : '001',
     'D' : '010',
     'MD' : '011',
@@ -45,7 +45,7 @@ dest = {
 
 # Jump table, value string represents j1, j2, j3
 jump = {
-    'null' : '000',
+    None : '000',
     'JGT' : '001',
     'JEQ' : '010',
     'JGE' : '011',

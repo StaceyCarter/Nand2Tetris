@@ -1,4 +1,5 @@
 import sys
+from tables import comp, dest, jump
 
 SYMBOL_TABLE = {
     'SP' : 0,
@@ -69,7 +70,54 @@ def handleC(line):
     
     Output:
         String - binary representation of the instruction to complete.
+
+    Examples:
+
+        >>> handleC("D=D+M")
+        '1111000010010000'
+
+        >>> handleC("D;JLE")
+        '1110001100000110'
+
+        >>> handleC("D ; JLE")
+        '1110001100000110'
+
+        >>> handleC("D = D+M")
+        '1111000010010000'
+
+        >>> handleC("D=D+M;JEQ")
+        '1111000010010010'
+
     """
+
+    instructions = {
+        'jump' : None,
+        'dest' : None,
+        'comp' : None
+    }
+
+    if ";" in line:
+        index = line.index(";")
+        instructions['jump'] = line[index+1:].strip()
+        instructions['comp'] = line[:index].strip()
+
+    if "=" in line:
+        index = line.index("=")
+        instructions['dest'] = line[:index].strip()
+        instructions['comp'] = line[index+1:].strip()
+    
+    if "=" in line and ";" in line:
+        indexE = line.index("=")
+        indexS = line.index(";")
+        instructions['comp'] = line[indexE+1:indexS].strip()
+
+    cInstruction = "111"
+
+    comp_binary = comp[instructions['comp']]
+    dest_binary = dest[instructions['dest']]
+    jump_binary = jump[instructions['jump']]
+    
+    return "111" + comp_binary + dest_binary + jump_binary
     
 
 def convertToBinary(num):
@@ -90,6 +138,9 @@ def convertToBinary(num):
 
 readFile("Add.asm")
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    from doctest import testmod
+    if testmod().failed == 0:
+        print("Success!")
     
     
