@@ -55,6 +55,7 @@ def handleA(line):
     Output:
     String - binary representation of input number
     """
+    #convertToBinary(num) !!!
     pass
 
 def handleC(line):
@@ -70,6 +71,15 @@ def handleC(line):
         String - binary representation of the instruction to complete.
     """
     pass
+
+def convertToBinary(num):
+    binary = []
+    while num > 0:
+        binary.append(str(num % 2))
+        num = num // 2
+    binary.reverse()
+    return "".join(binary)
+
 
 
             
