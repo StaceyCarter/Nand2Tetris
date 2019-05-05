@@ -34,6 +34,8 @@ def readFile(file):
 
     Depending on if each line is an A or a C instruction, handle converting it into a binary number.
     """
+    binaryFile = open("PongL.hack", "a")
+
     with open(file) as open_file:
         for line in open_file:
             line = line.strip()
@@ -44,7 +46,12 @@ def readFile(file):
                 if line[0] == "@":
                     result = handleA(line[1:]) # Returns the binary conversion padded with 0s to 16 bits, msb is always 0.
                 else:
-                    handleC(line)
+                    result = handleC(line)
+                binaryFile.write(result + '\n')
+                print(result)
+
+    binaryFile.close()
+        
 
 def handleA(line):
     """ Handle an A instruction
@@ -130,13 +137,9 @@ def convertToBinary(num):
 
 
 
-            
-            
+              
 
-
-           
-
-readFile("Add.asm")
+readFile("PongL.asm")
 
 if __name__ == "__main__":
     from doctest import testmod
