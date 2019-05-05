@@ -19,5 +19,14 @@ CHIP Computer {
     IN reset;
 
     PARTS:
-    // Put your code here:
+
+    // Feed in address from pc output (tells computer the next adress to go to)
+    ROM32K(address=pc, out=instruction);
+
+    // Feed in instruction from the ROM memory and the working memory.
+    CPU(inM=inM, instruction=instruction, reset=reset, outM=outM, writeM=writeM, addressM=addressM,pc=pc);
+
+    Memory(in=outM, load=writeM, address=addressM, out=inM);
+
+
 }
