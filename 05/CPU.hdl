@@ -39,5 +39,56 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    // Check if a instruction or C instruction. Sets both aInstruction and cInstruction outputs to their appropriate values.
+    Not(in=instruction[15], out=aInstruction);
+    Not(in=aInstruction, out=cInstruction);
+
+    // Takes care of selecting A (op-code = 0) instruction vs C instruction (op-code = 1)
+    // Loads either ALU output, if opcode is A (1) then load the instruction since it represents an address
+    // If opcode is 0 then load the ALU out since it is a C instruction.
+
+    Mux16(a=instruction, b=ALUOut , sel=instruction[15], out=newAValue);
+
+    // Whether or not to load the A register
+    And(a=cInstruction, b=instruction[5], out=calcA);
+    Or(a=aInstruction, b=calcA, out=loadA);
+    ARegister(in=newAValue, load=loadA, out=Aout, out[0..14]=addressM);
+
+    // Whether or not to load the D register.
+    And(a=instruction[4], b=cInstruction, out=loadD);
+    DRegister(in=ALUOut , load=loadD , out=DReg);
+
+    // Takes output from a and inM and decides using value a, whether The ALU will operate on the A input or the M input (ie pointer vs stored value)
+    Mux16(a=Aout , b=inM , sel=instruction[12] , out=Mux2Out );
+
+    // ALU loads the c components of the instruction (msb -> lsb)
+    ALU(x=DReg, y=Mux2Out, zx=instruction[11] ,nx= instruction[10] , zy=instruction[9], ny=instruction[8] , f=instruction[7] ,no=instruction[6] , out=outM, out=ALUOut , zr=zero ,ng=negative);
+
+    // Check to see if <0 and if j1 is selected
+    And(a=negative, b=instruction[2] , out=lessThanZero);
+
+    // Check if =0 and j2 selected.
+    And(a=zero , b=instruction[1] , out=equalToZero);
+
+    //Check if positive number
+    Not(in=zero, out=notZero);
+    Not(in=negative, out=pos);
+    And(a=notZero, b=pos, out=positive);
+
+    //Check if +ve and j3 selected
+    And(a=positive , b=instruction[0], out=greaterThanZero);
+
+    // Check if any of the jump conditions are fulfilled
+    Or(a=lessThanZero, b=equalToZero, out=lessThanOrEqual);
+    Or(a=lessThanOrEqual, b=greaterThanZero, out=PCLoader);
+
+    //Check if should jump (PC loader) and if following a C-instruction
+    And(a=cInstruction, b=PCLoader, out=jumpInstruct);
+
+    //Decide if should jump or increment - if no jump, then increment.
+    //Not(in=jumpInstruct, out=increment);
+    PC(in=Aout, load=jumpInstruct, inc=true, reset=reset , out[0..14]=pc);
+
+    // Select whether M should be written (based on d instruction & A instruction)
+    And(a=instruction[3], b=cInstruction, out=writeM);
 }
