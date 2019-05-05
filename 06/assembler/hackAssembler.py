@@ -41,7 +41,7 @@ def readFile(file):
                 line = line[:index].strip()
             if line != "" and line[0] != "/":
                 if line[0] == "@":
-                    handleA(line[1:])
+                    result = handleA(line[1:]) # Returns the binary conversion padded with 0s to 16 bits, msb is always 0.
                 else:
                     handleC(line)
 
@@ -55,8 +55,8 @@ def handleA(line):
     Output:
     String - binary representation of input number
     """
-    #convertToBinary(num) !!!
-    pass
+    binary_num = '0' + convertToBinary(int(line)).zfill(15)
+    return binary_num
 
 def handleC(line):
     """ Handle C (computation) instruction.
@@ -70,7 +70,7 @@ def handleC(line):
     Output:
         String - binary representation of the instruction to complete.
     """
-    pass
+    
 
 def convertToBinary(num):
     binary = []
