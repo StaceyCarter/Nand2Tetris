@@ -1,16 +1,12 @@
 import sys
 from tables import comp, dest, jump
 
-
-
-# input_file = sys.argv[0]
-
-def readFile(file):
+def readFile(file, binary_file_name):
     """ Open file and read in contents line by line, ignoring white space and comments.
 
     Depending on if each line is an A or a C instruction, handle converting it into a binary number.
     """
-    binaryFile = open("PongTest2.hack", "a")
+    binaryFile = open(binary_file_name, "w")
 
     with open(file) as open_file:
         for line in open_file:
@@ -111,8 +107,6 @@ def convertToBinary(num):
     binary.reverse()
     return "".join(binary)
 
-
-readFile("PongSymbols.asm")
 
 if __name__ == "__main__":
     from doctest import testmod

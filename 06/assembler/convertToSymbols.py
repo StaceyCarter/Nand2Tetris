@@ -1,3 +1,5 @@
+from hackAssembler import readFile
+
 SYMBOL_TABLE = {
     'SP' : 0,
     'LCL' : 1,
@@ -38,9 +40,11 @@ def first_pass(file):
                 
 def convertLabels(arr):
     """Add the labels to the symbol table for look up and delete them from the instruction list"""
+    #labels_seen = 0
     for index, instruction in enumerate(arr):
         if instruction[0] == "(":
-            SYMBOL_TABLE[instruction[1:-1]] = index
+            SYMBOL_TABLE[instruction[1:-1]] = index #- labels_seen
+            #labels_seen += 1
             no_whiteSpace.pop(index)
 
 def addVariables(arr):
@@ -53,7 +57,7 @@ def addVariables(arr):
 
 
 def secondPass(arr):
-    instruction_file = open("PongSymbols.asm", "a")
+    instruction_file = open("Symbols.asm", "w")
     for instruction in arr:
         if instruction[0] == "@":
             if instruction[1:].isdigit():
@@ -66,12 +70,17 @@ def secondPass(arr):
 
     instruction_file.close()
 
-
-
         
 
-first_pass("Pong.asm") # Remove comments and white space
+first_pass("Rect.asm") # Remove comments and white space
 
 convertLabels(no_whiteSpace) # Remove labels and add them to the symbol table
 
 addVariables(no_whiteSpace)
+
+secondPass(no_whiteSpace)
+
+readFile("Symbols.asm", "Rect.hack")
+
+
+
