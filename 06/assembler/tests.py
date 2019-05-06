@@ -21,8 +21,14 @@ class TestStringMethods(unittest.TestCase):
             myFile = myFile.read()
         with open("RectReference.hack") as comparisonFile:
             comparisonFile = comparisonFile.read()
-        self.assertEqual(myFile, comparisonFile)      
-        
+        self.assertEqual(myFile, comparisonFile)  
+
+    def test_compare_pong(self):
+        with open("Pong.hack") as myFile:
+            myFile = myFile.read()
+        with open("PongReference.hack") as comparisonFile:
+            comparisonFile = comparisonFile.read()
+        self.assertEqual(myFile, comparisonFile)          
 
 if __name__ == '__main__':
     unittest.main()
