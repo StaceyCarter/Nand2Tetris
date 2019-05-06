@@ -1,6 +1,7 @@
 
 # Key for what the computation represents. String represents a, c1, c2, c3, c4, c5, c6
 comp = {
+    None : '0000000',
     '0' : '0101010',
     '1' : '0111111',
     '-1' : '0111010',

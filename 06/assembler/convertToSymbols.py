@@ -24,30 +24,6 @@ SYMBOL_TABLE = {
     'KBD' : 24576
 }
 
-def readFile(file):
-    """ Open file and read in contents line by line, translate all the contents into something readable by the assembler.
-
-    >>> readFile("Max.asm")
-    @0
-    D=M
-    @1
-    D=D-M 
-    @11
-    D;JGT           
-    @1
-    D=M              
-    @13no_
-    0;JMP            
-    @0             
-    D=M              
-    @R2
-    M=D              
-    @17
-    0;JMP
-    """
-    # binaryFile = open("symbols", "a")
-    pass
-
 no_whiteSpace = []
 
 def first_pass(file):
@@ -64,22 +40,37 @@ def convertLabels(arr):
     """Add the labels to the symbol table for look up and delete them from the instruction list"""
     for index, instruction in enumerate(arr):
         if instruction[0] == "(":
-            SYMBOL_TABLE[instruction[1:-1]] = index + 1
+            SYMBOL_TABLE[instruction[1:-1]] = index
             no_whiteSpace.pop(index)
 
 def addVariables(arr):
     """Add the variables to the Symbol table."""
     n = 16
     for instruction in arr:
-        if instruction[0] == "@" and instruction[1:] not in SYMBOL_TABLE:
+        if instruction[0] == "@" and instruction[1:] not in SYMBOL_TABLE and not instruction[1:].isdigit():
             SYMBOL_TABLE[instruction[1:]] = n
             n += 1
 
-def secondPass()
+
+def secondPass(arr):
+    instruction_file = open("PongSymbols.asm", "a")
+    for instruction in arr:
+        if instruction[0] == "@":
+            if instruction[1:].isdigit():
+                result = instruction[1:]
+            else:
+                result = SYMBOL_TABLE[instruction[1:]]
+            instruction_file.write("@" + str(result) + "\n")
+        else:
+            instruction_file.write(str(instruction) + "\n")
+
+    instruction_file.close()
+
+
 
         
 
-first_pass("Max.asm") # Remove comments and white space
+first_pass("Pong.asm") # Remove comments and white space
 
 convertLabels(no_whiteSpace) # Remove labels and add them to the symbol table
 

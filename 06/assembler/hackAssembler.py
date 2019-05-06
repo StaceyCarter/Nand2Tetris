@@ -10,7 +10,7 @@ def readFile(file):
 
     Depending on if each line is an A or a C instruction, handle converting it into a binary number.
     """
-    binaryFile = open("PongL.hack", "a")
+    binaryFile = open("PongTest2.hack", "a")
 
     with open(file) as open_file:
         for line in open_file:
@@ -112,10 +112,7 @@ def convertToBinary(num):
     return "".join(binary)
 
 
-
-              
-
-readFile("PongL.asm")
+readFile("PongSymbols.asm")
 
 if __name__ == "__main__":
     from doctest import testmod
